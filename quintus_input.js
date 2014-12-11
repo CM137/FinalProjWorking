@@ -80,8 +80,8 @@ Quintus.Input = function(Q) {
   var DEFAULT_TOUCH_CONTROLS  = [ ['left','<' ],
                             ['right','>' ],
                             [],
-                            ['action','b'],
-                            ['fire', 'a' ]];
+                            [],
+                            ['up', '^' ]];
 
   // Clockwise from midnight (a la CSS)
   var DEFAULT_JOYPAD_INPUTS =  [ 'up','right','down','left'];
