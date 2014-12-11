@@ -338,6 +338,25 @@ Q.Sprite.extend("Wolf",{
         }
     },
 	});
+	
+  Q.Sprite.extend("Logo", {
+  init: function(p) {
+    this._super(p, { asset: 'titlelogo.png' });
+  },
+  step: function(dt){
+  	if(Q.inputs['fire']) {
+  		Q.clearStages();
+    	Q.stageScene('level1');
+    	Q.stageScene('hud', 3, Q('Player').first().p);
+  	}
+  }
+});
+
+Q.Sprite.extend("Instructions", {
+  init: function(p) {
+    this._super(p, { asset: 'titletext.png' });
+  }
+});
 
 // ## Level1 scene
 // Create a new scene called level 1
@@ -664,7 +683,7 @@ Q.scene('title',function(stage) {
   // Add in a repeater for a little parallax action
   stage.insert(new Q.Repeater({ asset: "background-wall.png", speedX: 0.5, speedY: 0.5 }));
 
-  var container = stage.insert(new Q.UI.Container({
+  /*var container = stage.insert(new Q.UI.Container({
     x: Q.width/2, y: Q.height/2, fill: "rgba(0,0,0,0.5)"
   }));
 
@@ -682,9 +701,14 @@ Q.scene('title',function(stage) {
 
   // Expand the container to visibily fit it's contents
   // (with a padding of 20 pixels)
-  container.fit(20);
+  container.fit(20);*/
   
-  stage.add("viewport").follow(container);
+  var title = new Q.Logo();
+  
+  stage.insert(title);
+  stage.insert(new Q.Instructions({y: 120});
+    
+  stage.add("viewport").follow(title);
   stage.viewport.scale = 2;
 });
 
@@ -717,7 +741,7 @@ Q.scene('hud',function(stage) {
 // assets that are already loaded will be skipped
 // The callback will be triggered when everything is loaded
 
-Q.load("spritesheet3.json, spritesheet3.png, level1.json, level2.json, titlelogo.png, level3.json, land.png, cavebackground.png, background-wall.png, Rick-astley.mp3, killenemy.mp3, jump.mp3, hit.mp3",  function() {//["Rick-astley.mp3"],
+Q.load("spritesheet3.json, spritesheet3.png, level1.json, level2.json, titlelogo.png, titletext.png, level3.json, land.png, cavebackground.png, background-wall.png, Rick-astley.mp3, killenemy.mp3, jump.mp3, hit.mp3",  function() {//["Rick-astley.mp3"],
 
   // Sprites sheets can be created manually
   Q.sheet("tiles","land.png", { tilew: 32, tileh: 32});
