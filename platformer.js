@@ -182,21 +182,17 @@ Q.Sprite.extend("Spike", {
 	  this.add('2d');
 	  this.on("bump.left,bump.right,bump.bottom,bump.top",function(collision) {
       if(collision.obj.isA("Player")) { 
-      	Q.state.dec("health", 33);
-      	if (Q.state.get("health") == 0)
-      	{
-      		Q.state.dec("lives", 1);
-      		collision.obj.destroy();
-      		if (Q.state.get("lives") == 0 || Q.state.get("lives") < 0) {
-				Q.stageScene("endGame",1, { label: "Game Over!", text: "Play Again" });
-			}
-			else {
-				Q.stageScene("endGame",1, { label: "You Died", text: "Respawn" });
-			}
-      	}
-      	
+      	Q.state.dec("lives", 1);
       	Q.audio.play('hit.mp3');
       	Q.stageScene('hud', 3, collision.obj.p);
+      	if (Q.state.get("lives") == 0 || Q.state.get("lives") < 0) {
+    		collision.obj.destroy();
+			Q.stageScene("endGame",1, { label: "Game Over!", text: "Play Again" });
+		}
+		else {
+			collision.obj.destroy();
+			Q.stageScene("endGame",1, { label: "You Died", text: "Respawn" });
+		}
       }
     });
 
@@ -818,7 +814,7 @@ Q.scene('hud',function(stage) {
 // assets that are already loaded will be skipped
 // The callback will be triggered when everything is loaded
 
-Q.load("spritesheet2.json, spritesheet2.png, level1.json, level2.json, titlelogo.png, titletext1.png, titletext2.png, youwon.png, level3.json, land.png, cavebackground.png, background-wall.png, Rick-astley.mp3, killenemy.mp3, jump.mp3, hit.mp3, coin.mp3",  function() {//["Rick-astley.mp3"],
+Q.load("spritesheet2.json, spritesheet2.png, level1.json, level2.json, titlelogo.png, titletext1.png, titletext2.png, youwon.png, level3.json, land.png, cavebackground.png, background-wall.png, soundloop.mp3, killenemy.mp3, jump.mp3, hit.mp3, coin.mp3",  function() {//["Rick-astley.mp3"],
 
   // Sprites sheets can be created manually
   Q.sheet("tiles","land.png", { tilew: 32, tileh: 32});
@@ -863,6 +859,6 @@ Q.load("spritesheet2.json, spritesheet2.png, level1.json, level2.json, titlelogo
   
   // Finally, call stageScene to run the game
   Q.stageScene("title",1, { label: 'Rainbow Unicorn Sunshine' }); 
- // Q.audio.play('Rick-astley.mp3',{ loop: true });
+  Q.audio.play('soundloop.mp3',{ loop: true });
 });
 });
