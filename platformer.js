@@ -701,10 +701,11 @@ Q.scene('title',function(stage) {
 
   // Expand the container to visibily fit it's contents
   // (with a padding of 20 pixels)
-  container.fit(20);
   
   var title = container.insert(new Q.Logo());
   var text = container.insert(new Q.Instructions({y: 120}));
+
+  container.fit(20);
 
   stage.add("viewport").follow(container);
   stage.viewport.scale = 2;
