@@ -154,17 +154,16 @@ Q.Sprite.extend("Spike", {
       	if (Q.state.get("health") == 0)
       	{
       		Q.state.dec("lives", 1);
+      		collision.obj.destroy();
       	}
       	
       	Q.audio.play('hit.mp3');
       	Q.stageScene('hud', 3, collision.obj.p);
       	
       	if (Q.state.get("lives") == 0 || Q.state.get("lives") < 0) {
-    		collision.obj.destroy();
 			Q.stageScene("endGame",1, { label: "Game Over!", text: "Play Again" });
 			}
 		else {
-			collision.obj.destroy();
 			Q.stageScene("endGame",1, { label: "You Died", text: "Respawn" });
 		}
       }
