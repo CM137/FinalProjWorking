@@ -197,14 +197,14 @@ Q.Sprite.extend("Player",{
 // Sprites can be simple, the Tower sprite just sets a custom sprite sheet
 Q.Sprite.extend("Portal", {
   init: function(p) {
-    this._super(p, { sheet: 'portal', sprite: 'portal', scale: "0.5", type: Q.SPRITE_DOOR, collisionMask: Q.SPRITE_NONE, sensor: true, });
+    this._super(p, { sheet: 'portal', sprite: 'portal', scale: "0.5", type: Q.SPRITE_COLLECTABLE, collisionMask: Q.SPRITE_PLAYER, sensor: true, });
 	this.add('animation');
 	this.play("spinning_portal", 1);
 	this.on("sensor");
   },
   sensor: function(colObj) {
-    // Mark the door object on the player.
-    colObj.p.door = this;
+    this.stage.trigger("complete");
+    
   }
 });
 
