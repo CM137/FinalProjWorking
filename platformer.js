@@ -65,6 +65,7 @@ Q.Sprite.extend("Player",{
 	     collision.obj.destroy();
         Q.state.inc('score', 25);
         Q.stageScene('hud', 3, collision.obj.p);
+        Q.audio.play('coin.mp3');
 	  }
     });
    
@@ -817,7 +818,7 @@ Q.scene('hud',function(stage) {
 // assets that are already loaded will be skipped
 // The callback will be triggered when everything is loaded
 
-Q.load("spritesheet2.json, spritesheet2.png, level1.json, level2.json, titlelogo.png, titletext1.png, titletext2.png, youwon.png, level3.json, land.png, cavebackground.png, background-wall.png, Rick-astley.mp3, killenemy.mp3, jump.mp3, hit.mp3",  function() {//["Rick-astley.mp3"],
+Q.load("spritesheet2.json, spritesheet2.png, level1.json, level2.json, titlelogo.png, titletext1.png, titletext2.png, youwon.png, level3.json, land.png, cavebackground.png, background-wall.png, Rick-astley.mp3, killenemy.mp3, jump.mp3, hit.mp3, coin.mp3",  function() {//["Rick-astley.mp3"],
 
   // Sprites sheets can be created manually
   Q.sheet("tiles","land.png", { tilew: 32, tileh: 32});
