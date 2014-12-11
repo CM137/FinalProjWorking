@@ -708,7 +708,7 @@ Q.scene('title',function(stage) {
   container.fit(20);
 
   stage.add("viewport").follow(container);
-  stage.viewport.scale = 2;
+  stage.viewport.scale = 1;
 });
 
 Q.scene('hud',function(stage) {
