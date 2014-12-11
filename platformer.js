@@ -540,7 +540,7 @@ Q.Sprite.extend("Wolf",{
 	
 	Q.Sprite.extend("Burns",{
   init: function(p) {
-    this._super(p, { sheet: 'burns', sprite: 'burns', vx: 70, frames: 0, points: [[-23,12],[23,12],[23,-12],[-23,-12]],
+    this._super(p, { sheet: 'burns', sprite: 'burns', vx: 70, frames: 0,
     				type: Q.SPRITE_ENEMY, collisionMask: Q.SPRITE_DEFAULT});
 
     // Enemies use the Bounce AI to change direction 
@@ -623,7 +623,7 @@ Q.Sprite.extend("Wolf",{
 
 Q.Sprite.extend("Factory", {
   init: function(p) {
-    this._super(p, { asset: 'factory.png' });
+    this._super(p, { asset: 'factory.png', type: Q.SPRITE_COLLECTABLE, collisionMask: Q.SPRITE_PLAYER, sensor: true, });
     this.on("bump.left,bump.right,bump.bottom",function(collision) {
       if(collision.obj.isA("Player")) { 
       	Q.clearStages();
@@ -631,6 +631,12 @@ Q.Sprite.extend("Factory", {
       }
     });
   },
+  
+  sensor: function(colObj) {
+    this.stage.trigger("complete");
+    this.destroy();
+    
+  }
 });
 
 Q.Sprite.extend("Instructions", {
@@ -1059,7 +1065,7 @@ Q.scene('hud',function(stage) {
 // assets that are already loaded will be skipped
 // The callback will be triggered when everything is loaded
 
-Q.load("spritesheet2.json, spritesheet2.png, level1.json, level2.json, level3.json, level4.json, titlelogo.png, titletext1.png, titletext2.png, youwon.png, land.png, background-wall.png, soundloop.mp3, killenemy.mp3, jump.mp3, hit.mp3, coin.mp3",  function() {
+Q.load("spritesheet2.json, spritesheet2.png, level1.json, level2.json, level3.json, level4.json, titlelogo.png, titletext1.png, titletext2.png, youwon.png, land.png, background-wall.png, factory.png, soundloop.mp3, killenemy.mp3, jump.mp3, hit.mp3, coin.mp3",  function() {
 
   // Sprites sheets can be created manually
   Q.sheet("tiles","land.png", { tilew: 32, tileh: 32});
