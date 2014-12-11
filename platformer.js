@@ -362,13 +362,7 @@ Q.Sprite.extend("Wolf",{
 
 Q.Sprite.extend("Instructions", {
   init: function(p) {
-    this._super(p, { asset: 'titletext.png' });
-  }
-});
-
-Q.Sprite.extend("Controls", {
-  init: function(p) {
-    this._super(p, { asset: 'titletext.png' });
+    this._super(p, {});
   }
 });
 
@@ -717,13 +711,12 @@ Q.scene('title',function(stage) {
   // (with a padding of 20 pixels)
   
   var title = container.insert(new Q.Logo());
-  var text = container.insert(new Q.Instructions({y: 120}));
   
   if(Q.input.keypad.size) {
-        var controls = container.insert(new Q.Controls({y: 80, asset: 'controls2.png'}));
+        var text = container.insert(new Q.Instructions({y: 120, asset: 'titletext2.png'}));
 	}
 	else {
-		var controls = container.insert(new Q.Controls({y: 80, asset: 'controls1.png'}));
+		var text = container.insert(new Q.Instructions({y: 120, asset: 'titletext1.png'}));
 	}
 
   container.fit(20);
@@ -761,7 +754,7 @@ Q.scene('hud',function(stage) {
 // assets that are already loaded will be skipped
 // The callback will be triggered when everything is loaded
 
-Q.load("spritesheet3.json, spritesheet3.png, level1.json, level2.json, titlelogo.png, titletext.png, controls1.png, controls2.png, level3.json, land.png, cavebackground.png, background-wall.png, Rick-astley.mp3, killenemy.mp3, jump.mp3, hit.mp3",  function() {//["Rick-astley.mp3"],
+Q.load("spritesheet3.json, spritesheet3.png, level1.json, level2.json, titlelogo.png, titletext1.png, titletext2.png, level3.json, land.png, cavebackground.png, background-wall.png, Rick-astley.mp3, killenemy.mp3, jump.mp3, hit.mp3",  function() {//["Rick-astley.mp3"],
 
   // Sprites sheets can be created manually
   Q.sheet("tiles","land.png", { tilew: 32, tileh: 32});
