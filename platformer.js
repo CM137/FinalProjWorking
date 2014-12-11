@@ -204,6 +204,7 @@ Q.Sprite.extend("Portal", {
   },
   sensor: function(colObj) {
     this.stage.trigger("complete");
+    this.destroy();
     
   }
 });
