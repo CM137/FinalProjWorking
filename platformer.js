@@ -765,11 +765,14 @@ Q.scene('hud',function(stage) {
   
   var label = container.insert(new Q.UI.Text({x:72, y:20,
     label: "Score: " + txt, color: "white" }));
+    
+  var level = container.insert(new Q.UI.Text({x:50, y: 45,
+    label: "Level: " + Q.state.get("level"), color: "white" }));
 
-  var strength = container.insert(new Q.UI.Text({x:50, y: 45,
+  var strength = container.insert(new Q.UI.Text({x:50, y: 70,
     label: "Lives: " + Q.state.get("lives"), color: "white" }));
     
-  var health = container.insert(new Q.UI.Text({x:62, y: 70,
+  var health = container.insert(new Q.UI.Text({x:62, y: 95,
     label: "Health: " + Q.state.get("health"), color: "white" }));
 
   container.fit(20);
