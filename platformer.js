@@ -708,7 +708,7 @@ Q.scene('title',function(stage) {
         var text = container.insert(new Q.Instructions({y: 120, asset: 'titletext2.png'}));
         container.fit(20);
   	stage.add("viewport").follow(container);
-  	stage.viewport.scale = .5;
+  	stage.viewport.scale = .75;
 	}
 	else {
 		var text = container.insert(new Q.Instructions({y: 120, asset: 'titletext1.png'}));
