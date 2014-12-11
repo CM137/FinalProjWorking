@@ -945,7 +945,7 @@ Q.scene("level4",function(stage) {
    //stage.insert(new Q.Spikes({ x: 750, y:620}));
   // Finally add in the tower goal
   //stage.insert(new Q.Tower({ x: 180, y: 50 }));
-  stage.insert(new Q.Factory({ x: 6000, y: 640 }));
+  stage.insert(new Q.Factory({ x: 6000, y: 340 }));
    stage.on("complete",function() { 
   	Q.stageScene("winGame", 1);
   });
@@ -990,16 +990,14 @@ Q.scene('title',function(stage) {
   
   var title = container.insert(new Q.Logo());
   
-  if(Q.input.keypad.size) {
-        var text = container.insert(new Q.Instructions({y: 120, asset: 'titletext2.png'}));
-        container.fit(20);
-  	stage.add("viewport").follow(container);
-  	stage.viewport.scale = .75;
-	}
-	else {
-		var text = container.insert(new Q.Instructions({y: 120, asset: 'titletext1.png'}));
+  var text = container.insert(new Q.Instructions({y: 120, asset: 'titletext.png'}));
 		container.fit(20);
   		stage.add("viewport").follow(container);
+  
+  if(Q.input.keypad.size) {
+  		stage.viewport.scale = .75;
+	}
+	else {
   		stage.viewport.scale = 1;
 	}
 });
