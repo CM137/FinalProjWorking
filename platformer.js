@@ -682,7 +682,7 @@ Q.scene("level4",function(stage) {
   //stage.insert(new Q.Tower({ x: 180, y: 50 }));
   stage.insert(new Q.Portal({ x: 5800, y: 450 }));
    stage.on("complete",function() { 
-  	Q.stageScene("endGame",1, { label: "You Won!" });
+  	Q.stageScene("winGame", 1);
   });
 });
 
