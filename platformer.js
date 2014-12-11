@@ -155,17 +155,16 @@ Q.Sprite.extend("Spike", {
       	{
       		Q.state.dec("lives", 1);
       		collision.obj.destroy();
+      		if (Q.state.get("lives") == 0 || Q.state.get("lives") < 0) {
+				Q.stageScene("endGame",1, { label: "Game Over!", text: "Play Again" });
+			}
+			else {
+				Q.stageScene("endGame",1, { label: "You Died", text: "Respawn" });
+			}
       	}
       	
       	Q.audio.play('hit.mp3');
       	Q.stageScene('hud', 3, collision.obj.p);
-      	
-      	if (Q.state.get("lives") == 0 || Q.state.get("lives") < 0) {
-			Q.stageScene("endGame",1, { label: "Game Over!", text: "Play Again" });
-			}
-		else {
-			Q.stageScene("endGame",1, { label: "You Died", text: "Respawn" });
-		}
       }
     });
 
@@ -210,18 +209,17 @@ Q.Sprite.extend("Stump",{
       	if (Q.state.get("health") == 0)
       	{
       		Q.state.dec("lives", 1);
+      		collision.obj.destroy();
+      		if (Q.state.get("lives") == 0 || Q.state.get("lives") < 0) {
+				Q.stageScene("endGame",1, { label: "Game Over!", text: "Play Again" });
+			}
+			else {
+				Q.stageScene("endGame",1, { label: "You Died", text: "Respawn" });
+			}
       	}
       	
       	Q.audio.play('hit.mp3');
       	Q.stageScene('hud', 3, collision.obj.p);
-      	if (Q.state.get("lives") == 0 || Q.state.get("lives") < 0) {
-    		collision.obj.destroy();
-			Q.stageScene("endGame",1, { label: "Game Over!", text: "Play Again" });
-		}
-		else {
-			collision.obj.destroy();
-			Q.stageScene("endGame",1, { label: "You Died", text: "Respawn" });
-		}
       }
     });
 	
@@ -266,18 +264,17 @@ Q.Sprite.extend("Wolf",{
       	if (Q.state.get("health") == 0)
       	{
       		Q.state.dec("lives", 1);
+      		collision.obj.destroy();
+      		if (Q.state.get("lives") == 0 || Q.state.get("lives") < 0) {
+				Q.stageScene("endGame",1, { label: "Game Over!", text: "Play Again" });
+			}
+			else {
+				Q.stageScene("endGame",1, { label: "You Died", text: "Respawn" });
+			}
       	}
       	
       	Q.audio.play('hit.mp3');
       	Q.stageScene('hud', 3, collision.obj.p);
-      	if (Q.state.get("lives") == 0 || Q.state.get("lives") < 0) {
-    		collision.obj.destroy();
-			Q.stageScene("endGame",1, { label: "Game Over!", text: "Play Again" });
-		}
-		else {
-			collision.obj.destroy();
-			Q.stageScene("endGame",1, { label: "You Died", text: "Respawn" });
-		}
       }
     });
 	
@@ -321,18 +318,17 @@ Q.Sprite.extend("Wolf",{
       	if (Q.state.get("health") == 0)
       	{
       		Q.state.dec("lives", 1);
+      		collision.obj.destroy();
+      		if (Q.state.get("lives") == 0 || Q.state.get("lives") < 0) {
+				Q.stageScene("endGame",1, { label: "Game Over!", text: "Play Again" });
+			}
+			else {
+				Q.stageScene("endGame",1, { label: "You Died", text: "Respawn" });
+			}
       	}
       	
       	Q.audio.play('hit.mp3');
       	Q.stageScene('hud', 3, collision.obj.p);
-      	if (Q.state.get("lives") == 0 || Q.state.get("lives") < 0) {
-    		collision.obj.destroy();
-			Q.stageScene("endGame",1, { label: "Game Over!", text: "Play Again" });
-		}
-		else {
-			collision.obj.destroy();
-			Q.stageScene("endGame",1, { label: "You Died", text: "Respawn" });
-		}
       }
     });
 	
@@ -772,7 +768,7 @@ Q.scene('hud',function(stage) {
   var strength = container.insert(new Q.UI.Text({x:50, y: 45,
     label: "Lives: " + Q.state.get("lives"), color: "white" }));
     
-  var health = container.insert(new Q.UI.Text({x:60, y: 70,
+  var health = container.insert(new Q.UI.Text({x:64, y: 70,
     label: "Health: " + Q.state.get("health"), color: "white" }));
 
   container.fit(20);
