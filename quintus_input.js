@@ -56,25 +56,25 @@ Quintus.Input = function(Q) {
 
   var DEFAULT_KEYS = {
   //changed to allow for adsw to take place of arrow keys
-    A: 'left', D: 'right',
+    /*A: 'left', D: 'right',
 	W: 'up', S: 'down',
 	SPACE: 'fire',
-	Z: 'fire',
+	//Z: 'fire',
 	//X: 'action',
     ENTER: 'confirm',
     ESC: 'esc',
     P: 'P',
-    S: 'S'
+    S: 'S'*/
 	
-	/* LEFT: 'left', RIGHT: 'right',
+	LEFT: 'left', RIGHT: 'right',
     UP: 'up',     DOWN: 'down',
     SPACE: 'fire',
-    Z: 'fire',
-    X: 'action',
+    //Z: 'fire',
+    //X: 'action',
     ENTER: 'confirm',
     ESC: 'esc',
     P: 'P',
-    S: 'S' */
+    S: 'S' 
   };
 
   var DEFAULT_TOUCH_CONTROLS  = [ ['left','<' ],
