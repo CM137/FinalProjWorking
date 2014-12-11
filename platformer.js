@@ -21,6 +21,11 @@ var Q = window.Q = Quintus({ audioSupported: [ 'mp3','ogg' ] })//{audioSupported
         // And turn on default input controls and touch input (for UI)
         .controls().touch().enableSound();//
 
+Q.SPRITE_PLAYER = 1;
+Q.SPRITE_COLLECTABLE = 2;
+Q.SPRITE_ENEMY = 4;
+Q.SPRITE_DOOR = 8;
+
 // ## Player Sprite
 // The very basic player sprite, this is just a normal sprite
 // using the player sprite sheet with default controls added to it.
@@ -36,6 +41,8 @@ Q.Sprite.extend("Player",{
       x: 600,           // You can also set additional properties that can
       y: 600,
       points: [[-32,28],[32,28],[32,-41],[-32,-41]],
+      type: Q.SPRITE_PLAYER,
+      collisionMask: Q.SPRITE_DEFAULT | Q.SPRITE_DOOR | Q.SPRITE_COLLECTABLE,
 	  scale: "0.8",
 // be overridden on object creation
       direction: "right",
@@ -52,7 +59,7 @@ Q.Sprite.extend("Player",{
 
     // Write event handlers to respond hook into behaviors.
     // hit.sprite is called everytime the player collides with a sprite
-    this.on("hit.sprite",function(collision) {
+    /*this.on("hit.sprite",function(collision) {
 
       // Check the collision, if it's the Tower, you win!
 	  //changed to if its a tower go to the next level
@@ -67,10 +74,11 @@ Q.Sprite.extend("Player",{
         Q.stageScene('hud', 3, collision.obj.p);
         Q.audio.play('coin.mp3');
 	  }
-    });
+    });*/
    
 	this.on("jump");
     this.on("jumped");
+    this.on("enemy.hit","enemyHit");
 
   },
   
@@ -153,7 +161,31 @@ Q.Sprite.extend("Player",{
 			this.resetLevel();
 		}
 	}
-  }
+  },
+  
+  enemyHit: function(data) {
+    var col = data.col;
+    var enemy = data.enemy;
+    this.p.vy = -150;
+    if (col.normalX == 1) {
+      // Hit from left.
+      this.p.x -=15;
+      this.p.y -=15;
+    }
+    else {
+      // Hit from right;
+      this.p.x +=15;
+      this.p.y -=15;
+    }
+    this.p.immune = true;
+    this.p.immuneTimer = 0;
+    this.p.immuneOpacity = 1;
+    this.p.strength -= 25;
+    Q.stageScene('hud', 3, this.p);
+    if (this.p.strength == 0) {
+      this.resetLevel();
+    }
+  },
 
 });
 
@@ -162,24 +194,40 @@ Q.Sprite.extend("Player",{
 // Sprites can be simple, the Tower sprite just sets a custom sprite sheet
 Q.Sprite.extend("Portal", {
   init: function(p) {
-    this._super(p, { sheet: 'portal', sprite: 'portal', scale: "0.5" });
+    this._super(p, { sheet: 'portal', sprite: 'portal', scale: "0.5", type: Q.SPRITE_DOOR, collisionMask: Q.SPRITE_NONE. sensor: true, });
 	this.add('animation');
 	this.play("spinning_portal", 1);
+	this.on("sensor");
+  },
+  sensor: function(colObj) {
+    // Mark the door object on the player.
+    colObj.p.door = this;
   }
 });
 
 Q.Sprite.extend("Coins", {
   init: function(p) {
-    this._super(p, { sheet: 'coins', sprite: 'coins', scale: "0.5" });
+    this._super(p, { sheet: 'coins', sprite: 'coins', scale: "0.5", sensor: true, type: Q.SPRITE_COLLECTABLE, collisionMask: Q.SPRITE_PLAYER, });
 	this.add('animation');
 	this.play("spin_forever", 1);
+	this.on("sensor");
+  },
+  sensor: function(colObj) {
+    // Increment the score.
+    if (this.p.amount) {
+      colObj.p.score += this.p.amount;
+      Q.stageScene('hud', 3, colObj.p);
+    }
+    Q.audio.play('coin.mp3');
+    this.destroy();
   }
 });
 
 Q.Sprite.extend("Spike", {
   init: function(p) {
-    this._super(p, { sheet: 'spike', sprite: 'spike', scale: "0.6" });
+    this._super(p, { sheet: 'spike', sprite: 'spike', scale: "0.6",type: Q.SPRITE_ENEMY, collisionMask: Q.SPRITE_DEFAULT });
 	  this.add('2d');
+    this.on("hit.sprite",this,"hit");
 	  this.on("bump.left,bump.right,bump.bottom,bump.top",function(collision) {
       if(collision.obj.isA("Player")) { 
       	Q.state.dec("lives", 1);
@@ -196,13 +244,33 @@ Q.Sprite.extend("Spike", {
       }
     });
 
+  },
+  
+  hit: function(col) {
+    if(col.obj.isA("Player") && !col.obj.p.immune && !this.p.dead) {
+      col.obj.trigger('enemy.hit', {"enemy":this,"col":col});
+      Q.audio.play('hit.mp3');
+    }
+  },
+
+  die: function(col) {
+    if(col.obj.isA("Player")) {
+      Q.audio.play('coin.mp3');
+      this.p.vx=this.p.vy=0;
+      this.play('dead');
+      this.p.dead = true;
+      var that = this;
+      col.obj.p.vy = -300;
+      this.p.deadTimer = 0;
+    }
   }
 });
 
 Q.Sprite.extend("Spikes", {
   init: function(p) {
-    this._super(p, { sheet: 'spikes', sprite: 'spikes', points: [[-32,15],[32,15],[32,-49],[-32,-49]], scale: "0.5" });
+    this._super(p, { sheet: 'spikes', sprite: 'spikes', points: [[-32,15],[32,15],[32,-49],[-32,-49]], scale: "0.5", type: Q.SPRITE_ENEMY, collisionMask: Q.SPRITE_DEFAULT });
 	this.add('2d');
+    this.on("hit.sprite",this,"hit");
 	  this.on("bump.left,bump.right,bump.bottom,bump.top",function(collision) {
       if(collision.obj.isA("Player")) { 
       	Q.state.dec("lives", 1);
@@ -218,17 +286,39 @@ Q.Sprite.extend("Spikes", {
 		}
       }
     });
+  },
+  hit: function(col) {
+    if(col.obj.isA("Player") && !col.obj.p.immune && !this.p.dead) {
+      col.obj.trigger('enemy.hit', {"enemy":this,"col":col});
+      Q.audio.play('hit.mp3');
+    }
+  },
+
+  die: function(col) {
+    if(col.obj.isA("Player")) {
+      Q.audio.play('coin.mp3');
+      this.p.vx=this.p.vy=0;
+      this.play('dead');
+      this.p.dead = true;
+      var that = this;
+      col.obj.p.vy = -300;
+      this.p.deadTimer = 0;
+    }
   }
 });
 
 Q.Sprite.extend("Stump",{
   init: function(p) {
-    this._super(p, { sheet: 'stump', sprite: 'stump', vx: 70, frames: 0, points: [[-32,4],[32,4],[32,-60],[-32,-60]], scale: "0.9", points: [[-23,14],[23,14],[23,-16],[-23,-16]],});
+    this._super(p, { sheet: 'stump', sprite: 'stump', vx: 70, frames: 0, points: [[-32,4],[32,4],[32,-60],[-32,-60]], scale: "0.9", points: [[-23,14],[23,14],[23,-16],[-23,-16]],
+    				type: Q.SPRITE_ENEMY, collisionMask: Q.SPRITE_DEFAULT});
 
     // Enemies use the Bounce AI to change direction 
     // whenver they run into something.
     this.add('2d, aiBounce, animation');
 
+	this.on("bump.top",this,"die");
+    this.on("hit.sprite",this,"hit");
+    
     // Listen for a sprite collision, if it's the player,
     // end the game unless the enemy is hit on top
     this.on("bump.left,bump.right,bump.bottom",function(collision) {
@@ -273,17 +363,39 @@ Q.Sprite.extend("Stump",{
           this.play("walk_left", 1);
         }
     },
+    hit: function(col) {
+    if(col.obj.isA("Player") && !col.obj.p.immune && !this.p.dead) {
+      col.obj.trigger('enemy.hit', {"enemy":this,"col":col});
+      Q.audio.play('hit.mp3');
+    }
+  },
+
+  die: function(col) {
+    if(col.obj.isA("Player")) {
+      Q.audio.play('coin.mp3');
+      this.p.vx=this.p.vy=0;
+      this.play('dead');
+      this.p.dead = true;
+      var that = this;
+      col.obj.p.vy = -300;
+      this.p.deadTimer = 0;
+    }
+  }
 	
 });
 
 Q.Sprite.extend("Wolf",{
   init: function(p) {
-    this._super(p, { sheet: 'wolf', sprite: 'wolf', vx: 70, frames: 0, scale: "0.7", points: [[-32,10],[32,10],[32,-35],[-32,-35]],});
+    this._super(p, { sheet: 'wolf', sprite: 'wolf', vx: 70, frames: 0, scale: "0.7", points: [[-32,10],[32,10],[32,-35],[-32,-35]],
+    				type: Q.SPRITE_ENEMY, collisionMask: Q.SPRITE_DEFAULT});
 
     // Enemies use the Bounce AI to change direction 
     // whenver they run into something.
     this.add('2d, aiBounce, animation');
 
+	this.on("bump.top",this,"die");
+    this.on("hit.sprite",this,"hit");
+    
     // Listen for a sprite collision, if it's the player,
     // end the game unless the enemy is hit on top
     this.on("bump.left,bump.right,bump.bottom",function(collision) {
@@ -328,15 +440,37 @@ Q.Sprite.extend("Wolf",{
           this.play("walk_left", 1);
         }
     },
+    hit: function(col) {
+    if(col.obj.isA("Player") && !col.obj.p.immune && !this.p.dead) {
+      col.obj.trigger('enemy.hit', {"enemy":this,"col":col});
+      Q.audio.play('hit.mp3');
+    }
+  },
+
+  die: function(col) {
+    if(col.obj.isA("Player")) {
+      Q.audio.play('coin.mp3');
+      this.p.vx=this.p.vy=0;
+      this.play('dead');
+      this.p.dead = true;
+      var that = this;
+      col.obj.p.vy = -300;
+      this.p.deadTimer = 0;
+    }
+  }
 });
 	
 	Q.Sprite.extend("Snailblue",{
   init: function(p) {
-    this._super(p, { sheet: 'snailblue', sprite: 'snailblue', vx: 60, frames: 0, points: [[-32,5],[32,5],[32,-45],[-32,-45]],});
+    this._super(p, { sheet: 'snailblue', sprite: 'snailblue', vx: 60, frames: 0, points: [[-32,5],[32,5],[32,-45],[-32,-45]],
+    				type: Q.SPRITE_ENEMY, collisionMask: Q.SPRITE_DEFAULT});
 
     // Enemies use the Bounce AI to change direction 
     // whenver they run into something.
     this.add('2d, aiBounce, animation');
+
+	this.on("bump.top",this,"die");
+    this.on("hit.sprite",this,"hit");
 
     // Listen for a sprite collision, if it's the player,
     // end the game unless the enemy is hit on top
@@ -382,6 +516,24 @@ Q.Sprite.extend("Wolf",{
           this.play("walk_left", 1);
         }
     },
+    hit: function(col) {
+    if(col.obj.isA("Player") && !col.obj.p.immune && !this.p.dead) {
+      col.obj.trigger('enemy.hit', {"enemy":this,"col":col});
+      Q.audio.play('hit.mp3');
+    }
+  },
+
+  die: function(col) {
+    if(col.obj.isA("Player")) {
+      Q.audio.play('coin.mp3');
+      this.p.vx=this.p.vy=0;
+      this.play('dead');
+      this.p.dead = true;
+      var that = this;
+      col.obj.p.vy = -300;
+      this.p.deadTimer = 0;
+    }
+  }
 	});
 	
   Q.Sprite.extend("Logo", {
