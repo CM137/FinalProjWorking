@@ -706,7 +706,7 @@ Q.scene('title',function(stage) {
   var title = new Q.Logo();
   
   stage.insert(title);
-  stage.insert(new Q.Instructions({y: 120});
+  stage.insert(new Q.Instructions({y: 120}));
     
   stage.add("viewport").follow(title);
   stage.viewport.scale = 2;
