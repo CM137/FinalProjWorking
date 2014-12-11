@@ -683,9 +683,9 @@ Q.scene('title',function(stage) {
   // Add in a repeater for a little parallax action
   stage.insert(new Q.Repeater({ asset: "background-wall.png", speedX: 0.5, speedY: 0.5 }));
 
-  /*var container = stage.insert(new Q.UI.Container({
-    x: Q.width/2, y: Q.height/2, fill: "rgba(0,0,0,0.5)"
-  }));
+  var container = stage.insert(new Q.UI.Container({
+    x: Q.width/2, y: Q.height/2, fill: "rgba(0,0,0,0)", border: 0
+  }));/*
 
   var button = container.insert(new Q.UI.Button({ x: 0, y: 0, fill: "#FFFFFF",
                                                   label: "Play" }))         
@@ -697,18 +697,16 @@ Q.scene('title',function(stage) {
     Q.clearStages();
     Q.stageScene('level1');
     Q.stageScene('hud', 3, Q('Player').first().p);
-  });
+  });*/
 
   // Expand the container to visibily fit it's contents
   // (with a padding of 20 pixels)
-  container.fit(20);*/
+  container.fit(20);
   
-  var title = new Q.Logo();
-  
-  stage.insert(title);
-  stage.insert(new Q.Instructions({y: 120}));
-    
-  stage.add("viewport").follow(title);
+  var title = container.insert(new Q.Logo());
+  var text = container.insert(new Q.Instructions({y: 120}));
+
+  stage.add("viewport").follow(container);
   stage.viewport.scale = 2;
 });
 
