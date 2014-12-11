@@ -937,6 +937,7 @@ Q.scene('hud',function(stage) {
   }));
   
   var pointsLength = 4;
+  var healthLength = 2;
   
   var score = Q.state.get("score");
   
@@ -945,6 +946,13 @@ Q.scene('hud',function(stage) {
   while(i-- > 0) { zeros += "0"; }
   
   txt = zeros + txt;
+  
+  var healthlevel = Q.state.get("health");
+  var txt2 = "" + healthlevel;
+  var i2 = healthLength - txt2.length, zeros2 = "";
+  while(i2-- > 0) { zeros2 += "0"; }
+  
+  txt2 = zeros2 + txt2;
   
   var label = container.insert(new Q.UI.Text({x:72, y:20,
     label: "Score: " + txt, color: "white" }));
@@ -956,7 +964,7 @@ Q.scene('hud',function(stage) {
     label: "Lives: " + Q.state.get("lives"), color: "white" }));
     
   var health = container.insert(new Q.UI.Text({x:62, y: 95,
-    label: "Health: " + Q.state.get("health"), color: "white" }));
+    label: "Health: " + txt2, color: "white" }));
 
   container.fit(20);
 });
