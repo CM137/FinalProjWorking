@@ -19,15 +19,19 @@ var Q = window.Q = Quintus({ audioSupported: [ 'mp3','ogg' ] })//{audioSupported
         // Maximize this game to whatever the size of the browser is
         .setup({ maximize: true })
         // And turn on default input controls and touch input (for UI)
-        .controls().touch().enableSound();//
+        .controls(['left','<' ],
+               ['right','>' ],
+               [],
+               [],
+               ['up','jump']).touch().enableSound();//
         
-Q.input.touchControls({
+/*Q.input.touchControls({
   controls:  [ ['left','<' ],
                ['right','>' ],
                [],
                [],
                ['up','jump']]
-});
+});*/
 
 // ## Player Sprite
 // The very basic player sprite, this is just a normal sprite
