@@ -311,7 +311,7 @@ Q.Sprite.extend("Spikes", {
 
 Q.Sprite.extend("Stump",{
   init: function(p) {
-    this._super(p, { sheet: 'stump', sprite: 'stump', vx: 70, frames: 0, points: [[-32,4],[32,4],[32,-60],[-32,-60]], scale: "0.9", points: [[-23,14],[23,14],[23,-16],[-23,-16]],
+    this._super(p, { sheet: 'stump', sprite: 'stump', vx: 70, frames: 0, points: [[-32,0],[32,0],[32,-60],[-32,-60]], scale: "0.9", points: [[-23,14],[23,14],[23,-16],[-23,-16]],
     				type: Q.SPRITE_ENEMY, collisionMask: Q.SPRITE_DEFAULT});
 
     // Enemies use the Bounce AI to change direction 
