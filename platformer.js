@@ -945,7 +945,7 @@ Q.scene("level4",function(stage) {
    //stage.insert(new Q.Spikes({ x: 750, y:620}));
   // Finally add in the tower goal
   //stage.insert(new Q.Tower({ x: 180, y: 50 }));
-  stage.insert(new Q.Factory({ x: 6000, y: 490 }));
+  stage.insert(new Q.Factory({ x: 6000, y: 640 }));
    stage.on("complete",function() { 
   	Q.stageScene("winGame", 1);
   });
