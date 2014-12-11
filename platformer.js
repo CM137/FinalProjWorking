@@ -215,7 +215,7 @@ Q.Sprite.extend("Coins", {
   sensor: function(colObj) {
     // Increment the score.
     if (this.p.amount) {
-      colObj.p.score += this.p.amount;
+      Q.state.inc('score', 25);
       Q.stageScene('hud', 3, colObj.p);
     }
     Q.audio.play('coin.mp3');
