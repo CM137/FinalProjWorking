@@ -87,6 +87,7 @@ Q.Sprite.extend("Player",{
   
    resetLevel: function() {
     Q.stageScene("level" + Q.state.get("level"));
+    Q.state.set("health", 99);
     Q.stageScene('hud', 3, this.p);
   },
   
@@ -149,13 +150,19 @@ Q.Sprite.extend("Spike", {
 	  this.add('2d');
 	  this.on("bump.left,bump.right,bump.bottom,bump.top",function(collision) {
       if(collision.obj.isA("Player")) { 
-      	Q.state.dec("lives", 1);
+      	Q.state.dec("health", 33);
+      	if (Q.state.get("health") == 0)
+      	{
+      		Q.state.dec("lives", 1);
+      	}
+      	
       	Q.audio.play('hit.mp3');
       	Q.stageScene('hud', 3, collision.obj.p);
+      	
       	if (Q.state.get("lives") == 0 || Q.state.get("lives") < 0) {
     		collision.obj.destroy();
 			Q.stageScene("endGame",1, { label: "Game Over!", text: "Play Again" });
-		}
+			}
 		else {
 			collision.obj.destroy();
 			Q.stageScene("endGame",1, { label: "You Died", text: "Respawn" });
@@ -200,7 +207,12 @@ Q.Sprite.extend("Stump",{
     // end the game unless the enemy is hit on top
     this.on("bump.left,bump.right,bump.bottom",function(collision) {
       if(collision.obj.isA("Player")) { 
-      	Q.state.dec("lives", 1);
+      	Q.state.dec("health", 33);
+      	if (Q.state.get("health") == 0)
+      	{
+      		Q.state.dec("lives", 1);
+      	}
+      	
       	Q.audio.play('hit.mp3');
       	Q.stageScene('hud', 3, collision.obj.p);
       	if (Q.state.get("lives") == 0 || Q.state.get("lives") < 0) {
@@ -251,7 +263,12 @@ Q.Sprite.extend("Wolf",{
     // end the game unless the enemy is hit on top
     this.on("bump.left,bump.right,bump.bottom",function(collision) {
       if(collision.obj.isA("Player")) { 
-      	Q.state.dec("lives", 1);
+      	Q.state.dec("health", 33);
+      	if (Q.state.get("health") == 0)
+      	{
+      		Q.state.dec("lives", 1);
+      	}
+      	
       	Q.audio.play('hit.mp3');
       	Q.stageScene('hud', 3, collision.obj.p);
       	if (Q.state.get("lives") == 0 || Q.state.get("lives") < 0) {
@@ -301,7 +318,12 @@ Q.Sprite.extend("Wolf",{
     // end the game unless the enemy is hit on top
     this.on("bump.left,bump.right,bump.bottom",function(collision) {
       if(collision.obj.isA("Player")) { 
-      	Q.state.dec("lives", 1);
+      	Q.state.dec("health", 33);
+      	if (Q.state.get("health") == 0)
+      	{
+      		Q.state.dec("lives", 1);
+      	}
+      	
       	Q.audio.play('hit.mp3');
       	Q.stageScene('hud', 3, collision.obj.p);
       	if (Q.state.get("lives") == 0 || Q.state.get("lives") < 0) {
@@ -343,18 +365,31 @@ Q.Sprite.extend("Wolf",{
   init: function(p) {
     this._super(p, { asset: 'titlelogo.png' });
   },
-  step: function(dt){
-  	if(Q.inputs['up']) {
-  		Q.clearStages();
-    	Q.stageScene('level1');
-    	Q.stageScene('hud', 3, Q('Player').first().p);
-  	}
-  }
+});
+
+Q.Sprite.extend("Factory", {
+  init: function(p) {
+    this._super(p, { asset: 'factory.png' });
+    this.on("bump.left,bump.right,bump.bottom",function(collision) {
+      if(collision.obj.isA("Player")) { 
+      	Q.clearStages();
+    	Q.stageScene('winGame');
+      }
+    });
+  },
 });
 
 Q.Sprite.extend("Instructions", {
   init: function(p) {
     this._super(p, {});
+  },
+  step: function(dt){
+  	if(Q.inputs['up']) {
+  		Q.clearStages();
+    	Q.stageScene('level1');
+    	Q.state.reset({ score: 0, lives: 3, level: 1, health: 99 });
+    	Q.stageScene('hud', 3, Q('Player').first().p);
+  	}
   }
 });
 
@@ -668,7 +703,7 @@ Q.scene('endGame',function(stage) {
   button.on("click",function() {
     Q.clearStages();
     if (Q.state.get("lives") == 0 || Q.state.get("lives") < 0) {
-    	Q.state.reset({ score: 0, lives: 3, level: 1 });
+    	Q.state.reset({ score: 0, lives: 3, level: 1, health: 99 });
     }
     Q.stageScene('level' + Q.state.get("level"));
     Q.stageScene('hud', 3, Q('Player').first().p);
@@ -685,22 +720,7 @@ Q.scene('title',function(stage) {
 
   var container = stage.insert(new Q.UI.Container({
     x: Q.width/2, y: Q.height/2, fill: "rgba(0,0,0,0)", border: 0
-  }));/*
-
-  var button = container.insert(new Q.UI.Button({ x: 0, y: 0, fill: "#FFFFFF",
-                                                  label: "Play" }))         
-  var label = container.insert(new Q.UI.Text({x:10, y: -20 - button.p.h, 
-                                                   label: stage.options.label, color: "white" }));
-  // When the button is clicked, clear all the stages
-  // and restart the game.
-  button.on("click",function() {
-    Q.clearStages();
-    Q.stageScene('level1');
-    Q.stageScene('hud', 3, Q('Player').first().p);
-  });*/
-
-  // Expand the container to visibily fit it's contents
-  // (with a padding of 20 pixels)
+  }));
   
   var title = container.insert(new Q.Logo());
   
@@ -718,6 +738,20 @@ Q.scene('title',function(stage) {
 	}
 });
 
+Q.scene('winGame',function(stage) {
+  // Add in a repeater for a little parallax action
+  stage.insert(new Q.Repeater({ asset: "background-wall.png", speedX: 0.5, speedY: 0.5 }));
+
+  var container = stage.insert(new Q.UI.Container({
+    x: Q.width/2, y: Q.height/2, fill: "rgba(0,0,0,0)", border: 0
+  }));
+  
+  var text = container.insert(new Q.Instructions({asset: 'youwon.png'}));
+		container.fit(20);
+  		stage.add("viewport").follow(container);
+  		stage.viewport.scale = 1;
+});
+
 Q.scene('hud',function(stage) {
   var container = stage.insert(new Q.UI.Container({
     x: 50, y: 0
@@ -733,11 +767,14 @@ Q.scene('hud',function(stage) {
   
   txt = zeros + txt;
   
-  var label = container.insert(new Q.UI.Text({x:72, y: 45,
+  var label = container.insert(new Q.UI.Text({x:72, y:20,
     label: "Score: " + txt, color: "white" }));
 
-  var strength = container.insert(new Q.UI.Text({x:50, y: 20,
+  var strength = container.insert(new Q.UI.Text({x:50, y: 45,
     label: "Lives: " + Q.state.get("lives"), color: "white" }));
+    
+  var health = container.insert(new Q.UI.Text({x:50, y: 70,
+    label: "Health: " + Q.state.get("health"), color: "white" }));
 
   container.fit(20);
 });
@@ -747,7 +784,7 @@ Q.scene('hud',function(stage) {
 // assets that are already loaded will be skipped
 // The callback will be triggered when everything is loaded
 
-Q.load("spritesheet3.json, spritesheet3.png, level1.json, level2.json, titlelogo.png, titletext1.png, titletext2.png, level3.json, land.png, cavebackground.png, background-wall.png, Rick-astley.mp3, killenemy.mp3, jump.mp3, hit.mp3",  function() {//["Rick-astley.mp3"],
+Q.load("spritesheet3.json, spritesheet3.png, level1.json, level2.json, titlelogo.png, titletext1.png, titletext2.png, youwon.png, level3.json, land.png, cavebackground.png, background-wall.png, Rick-astley.mp3, killenemy.mp3, jump.mp3, hit.mp3",  function() {//["Rick-astley.mp3"],
 
   // Sprites sheets can be created manually
   Q.sheet("tiles","land.png", { tilew: 32, tileh: 32});
@@ -788,7 +825,7 @@ Q.load("spritesheet3.json, spritesheet3.png, level1.json, level2.json, titlelogo
   	  walk_right: { frames: [0], rate: 1, flip: "x", loop:true},
   });
   
-  Q.state.reset({ score: 0, lives: 3, level: 1 });
+  Q.state.reset({ score: 0, lives: 3, level: 1, health: 99 });
   
   // Finally, call stageScene to run the game
   Q.stageScene("title",1, { label: 'Rainbow Unicorn Sunshine' }); 
