@@ -311,7 +311,7 @@ Q.Sprite.extend("Spikes", {
 
 Q.Sprite.extend("Stump",{
   init: function(p) {
-    this._super(p, { sheet: 'stump', sprite: 'stump', vx: 70, frames: 0, points: [[-23,12],[23,12],[23,-12],[-23,-12]], scale: "0.9", points: [[-23,14],[23,14],[23,-16],[-23,-16]],
+    this._super(p, { sheet: 'stump', sprite: 'stump', vx: 70, frames: 0, points: [[-23,12],[23,12],[23,-12],[-23,-12]], scale: "0.9",
     				type: Q.SPRITE_ENEMY, collisionMask: Q.SPRITE_DEFAULT});
 
     // Enemies use the Bounce AI to change direction 
@@ -537,6 +537,83 @@ Q.Sprite.extend("Wolf",{
     }
   }
 	});
+	
+	Q.Sprite.extend("Burns",{
+  init: function(p) {
+    this._super(p, { sheet: 'burns', sprite: 'burns', vx: 70, frames: 0, points: [[-23,12],[23,12],[23,-12],[-23,-12]],
+    				type: Q.SPRITE_ENEMY, collisionMask: Q.SPRITE_DEFAULT});
+
+    // Enemies use the Bounce AI to change direction 
+    // whenver they run into something.
+    this.add('2d, aiBounce, animation');
+
+	this.on("bump.top",this,"die");
+    this.on("hit.sprite",this,"hit");
+    
+    // Listen for a sprite collision, if it's the player,
+    // end the game unless the enemy is hit on top
+    this.on("bump.left,bump.right,bump.bottom",function(collision) {
+      if(collision.obj.isA("Player")) { 
+      	Q.state.dec("health", 33);
+      	if (Q.state.get("health") == 0)
+      	{
+      		Q.state.dec("lives", 1);
+      		collision.obj.destroy();
+      		if (Q.state.get("lives") == 0 || Q.state.get("lives") < 0) {
+				Q.stageScene("endGame",1, { label: "Game Over!", text: "Play Again" });
+			}
+			else {
+				Q.stageScene("endGame",1, { label: "You Died", text: "Respawn" });
+			}
+      	}
+      	
+      	Q.audio.play('hit.mp3');
+      	Q.stageScene('hud', 3, collision.obj.p);
+      }
+    });
+	
+	// If the enemy gets hit on the top, destroy it
+    // and give the user a "hop"
+    this.on("bump.top",function(collision) {
+      if(collision.obj.isA("Player")) { 
+        this.destroy();
+        Q.audio.play('killenemy.mp3');
+        collision.obj.p.vy = -300;
+        Q.state.inc('score', 100);
+        Q.stageScene('hud', 3, collision.obj.p);
+      }
+    });
+  },
+	  destroyed: function() {
+	},
+	
+	step: function(dt) {
+        if(this.p.vx > 0) {
+          this.play("walk_right", 1);
+        } else if(this.p.vx < 0) {
+          this.play("walk_left", 1);
+        }
+    },
+    hit: function(col) {
+    if(col.obj.isA("Player") && !col.obj.p.immune && !this.p.dead) {
+      col.obj.trigger('enemy.hit', {"enemy":this,"col":col});
+      Q.audio.play('hit.mp3');
+    }
+  },
+
+  die: function(col) {
+    if(col.obj.isA("Player")) {
+      Q.audio.play('coin.mp3');
+      this.p.vx=this.p.vy=0;
+      this.play('dead');
+      this.p.dead = true;
+      var that = this;
+      col.obj.p.vy = -300;
+      this.p.deadTimer = 0;
+    }
+  }
+	
+});
 	
   Q.Sprite.extend("Logo", {
   init: function(p) {
@@ -826,7 +903,7 @@ Q.scene("level4",function(stage) {
   stage.insert(new Q.Snailblue({ x: 2900, y: 500 }));
   stage.insert(new Q.Wolf({ x: 4400, y: 200 }));
   stage.insert(new Q.Wolf({ x: 4900, y: 200 }));
-  stage.insert(new Q.Stump({ x: 5200, y: 200 }));
+  stage.insert(new Q.Burns({ x: 5200, y: 200 }));
   
   stage.insert(new Q.Coins({ x: 750, y:575}));
   stage.insert(new Q.Coins({ x: 850, y:550}));
@@ -860,7 +937,7 @@ Q.scene("level4",function(stage) {
    //stage.insert(new Q.Spikes({ x: 750, y:620}));
   // Finally add in the tower goal
   //stage.insert(new Q.Tower({ x: 180, y: 50 }));
-  stage.insert(new Q.Portal({ x: 5800, y: 450 }));
+  stage.insert(new Q.Factory({ x: 5800, y: 450 }));
    stage.on("complete",function() { 
   	Q.stageScene("winGame", 1);
   });
@@ -1021,6 +1098,11 @@ Q.load("spritesheet2.json, spritesheet2.png, level1.json, level2.json, level3.js
   Q.animations('snailblue', {
   	  walk_left: { frames: [0], rate: 1, flip: false, loop:true},
   	  walk_right: { frames: [0], rate: 1, flip: "x", loop:true},
+  });
+  
+  Q.animations('burns', {
+  	  walk_left: { frames: [0,1,2], rate: 1/3, flip: false, loop:true},
+  	  walk_right: { frames: [0,1,2], rate: 1/3, flip: "x", loop:true},
   });
   
   Q.state.reset({ score: 0, lives: 3, level: 1, health: 99, x: 0, y: 0 });
