@@ -20,6 +20,14 @@ var Q = window.Q = Quintus({ audioSupported: [ 'mp3','ogg' ] })//{audioSupported
         .setup({ maximize: true })
         // And turn on default input controls and touch input (for UI)
         .controls().touch().enableSound();//
+        
+Q.input.touchControls({
+  controls:  [ ['left','<' ],
+               ['right','>' ],
+               [],
+               [],
+               ['action','jump']]
+});
 
 // ## Player Sprite
 // The very basic player sprite, this is just a normal sprite
@@ -353,6 +361,12 @@ Q.Sprite.extend("Wolf",{
 });
 
 Q.Sprite.extend("Instructions", {
+  init: function(p) {
+    this._super(p, { asset: 'titletext.png' });
+  }
+});
+
+Q.Sprite.extend("Controls", {
   init: function(p) {
     this._super(p, { asset: 'titletext.png' });
   }
@@ -704,6 +718,13 @@ Q.scene('title',function(stage) {
   
   var title = container.insert(new Q.Logo());
   var text = container.insert(new Q.Instructions({y: 120}));
+  
+  if(Q.input.keypad.size) {
+        var controls = container.insert(new Q.Controls({y: 80, asset: 'controls2.png'}));
+	}
+	else {
+		var controls = container.insert(new Q.Controls({y: 80, asset: 'controls1.png'}));
+	}
 
   container.fit(20);
 
