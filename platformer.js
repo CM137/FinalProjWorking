@@ -967,10 +967,10 @@ Q.scene('hud',function(stage) {
   var health = container.insert(new Q.UI.Text({x:62, y: 95,
     label: "Health: " + txt2, color: "white" }));
     
-    var x = container.insert(new Q.UI.Text({x:62, y: 110,
+    var x = container.insert(new Q.UI.Text({x:110, y: 110,
     label: "x: " + Q.state.get("x"), color: "white" }));
     
-    var y = container.insert(new Q.UI.Text({x:62, y: 135,
+    var y = container.insert(new Q.UI.Text({x:110, y: 135,
     label: "y: " + Q.state.get("y"), color: "white" }));
 
   container.fit(20);
