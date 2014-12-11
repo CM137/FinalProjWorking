@@ -541,8 +541,8 @@ Q.Sprite.extend("Wolf",{
 	Q.Sprite.extend("Burns",{
   init: function(p) {
     this._super(p, { sheet: 'burns', sprite: 'burns', vx: 70, frames: 0,
-    				type: Q.SPRITE_ENEMY, collisionMask: Q.SPRITE_DEFAULT},
-    				points: [[-24,44],[24,44],[24,-48],[-24,-48]]);
+    				type: Q.SPRITE_ENEMY, collisionMask: Q.SPRITE_DEFAULT,
+    				points: [[-24,44],[24,44],[24,-48],[-24,-48]]});
 
     // Enemies use the Bounce AI to change direction 
     // whenver they run into something.
