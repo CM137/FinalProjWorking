@@ -26,7 +26,7 @@ Q.input.touchControls({
                ['right','>' ],
                [],
                [],
-               ['up','^']]
+               ['up','jump']]
 });
 
 // ## Player Sprite
