@@ -541,7 +541,8 @@ Q.Sprite.extend("Wolf",{
 	Q.Sprite.extend("Burns",{
   init: function(p) {
     this._super(p, { sheet: 'burns', sprite: 'burns', vx: 70, frames: 0,
-    				type: Q.SPRITE_ENEMY, collisionMask: Q.SPRITE_DEFAULT});
+    				type: Q.SPRITE_ENEMY, collisionMask: Q.SPRITE_DEFAULT},
+    				points: [[-24,44],[24,44],[24,-48],[-24,-48]]);
 
     // Enemies use the Bounce AI to change direction 
     // whenver they run into something.
@@ -554,7 +555,7 @@ Q.Sprite.extend("Wolf",{
     // end the game unless the enemy is hit on top
     this.on("bump.left,bump.right,bump.bottom",function(collision) {
       if(collision.obj.isA("Player")) { 
-      	Q.state.dec("health", 33);
+      	Q.state.set("health", 0);
       	if (Q.state.get("health") == 0)
       	{
       		Q.state.dec("lives", 1);
@@ -630,6 +631,7 @@ Q.Sprite.extend("Factory", {
     	Q.stageScene('winGame');
       }
     });
+    this.on("sensor");
   },
   
   sensor: function(colObj) {
@@ -943,7 +945,7 @@ Q.scene("level4",function(stage) {
    //stage.insert(new Q.Spikes({ x: 750, y:620}));
   // Finally add in the tower goal
   //stage.insert(new Q.Tower({ x: 180, y: 50 }));
-  stage.insert(new Q.Factory({ x: 5800, y: 450 }));
+  stage.insert(new Q.Factory({ x: 6000, y: 490 }));
    stage.on("complete",function() { 
   	Q.stageScene("winGame", 1);
   });
