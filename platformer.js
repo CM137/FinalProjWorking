@@ -701,6 +701,7 @@ Q.scene('endGame',function(stage) {
     	Q.state.reset({ score: 0, lives: 3, level: 1, health: 99 });
     }
     Q.stageScene('level' + Q.state.get("level"));
+    Q.state.set("health", 99);
     Q.stageScene('hud', 3, Q('Player').first().p);
   });
 
@@ -768,7 +769,7 @@ Q.scene('hud',function(stage) {
   var strength = container.insert(new Q.UI.Text({x:50, y: 45,
     label: "Lives: " + Q.state.get("lives"), color: "white" }));
     
-  var health = container.insert(new Q.UI.Text({x:64, y: 70,
+  var health = container.insert(new Q.UI.Text({x:62, y: 70,
     label: "Health: " + Q.state.get("health"), color: "white" }));
 
   container.fit(20);
