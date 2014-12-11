@@ -706,15 +706,16 @@ Q.scene('title',function(stage) {
   
   if(Q.input.keypad.size) {
         var text = container.insert(new Q.Instructions({y: 120, asset: 'titletext2.png'}));
+        container.fit(20);
+  	stage.add("viewport").follow(container);
+  	stage.viewport.scale = .5;
 	}
 	else {
 		var text = container.insert(new Q.Instructions({y: 120, asset: 'titletext1.png'}));
+		container.fit(20);
+  		stage.add("viewport").follow(container);
+  		stage.viewport.scale = 1;
 	}
-
-  container.fit(20);
-
-  stage.add("viewport").follow(container);
-  stage.viewport.scale = 1;
 });
 
 Q.scene('hud',function(stage) {
