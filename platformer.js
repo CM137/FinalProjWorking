@@ -772,7 +772,7 @@ Q.scene('hud',function(stage) {
   var strength = container.insert(new Q.UI.Text({x:50, y: 45,
     label: "Lives: " + Q.state.get("lives"), color: "white" }));
     
-  var health = container.insert(new Q.UI.Text({x:50, y: 70,
+  var health = container.insert(new Q.UI.Text({x:60, y: 70,
     label: "Health: " + Q.state.get("health"), color: "white" }));
 
   container.fit(20);
