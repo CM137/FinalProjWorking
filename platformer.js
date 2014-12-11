@@ -458,6 +458,7 @@ Q.scene("level1",function(stage) {
   stage.on("complete",function() { 
   	Q.state.inc("level", 1);
     Q.stageScene("level" + Q.state.get("level")); 
+    Q.stageScene('hud', 3, this.p);
   });
   
 });
@@ -532,6 +533,7 @@ Q.scene("level2",function(stage) {
   stage.on("complete",function() { 
   	Q.state.inc("level", 1);
     Q.stageScene("level" + Q.state.get("level")); 
+    Q.stageScene('hud', 3, this.p);
   });
 });
 
@@ -609,6 +611,7 @@ Q.scene("level3",function(stage) {
    stage.on("complete",function() { 
   	Q.state.inc("level", 1);
     Q.stageScene("level" + Q.state.get("level")); 
+    Q.stageScene('hud', 3, this.p);
   });
  
 });

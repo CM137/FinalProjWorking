@@ -785,7 +785,7 @@ Quintus.Input = function(Q) {
   Q.component("platformerControls", {
     defaults: {
       speed: 200,
-      jumpSpeed: -450,
+      jumpSpeed: -375,
       collisions: []
     },
 
