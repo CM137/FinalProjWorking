@@ -26,7 +26,7 @@ Q.input.touchControls({
                ['right','>' ],
                [],
                [],
-               ['action','jump']]
+               ['up','^']]
 });
 
 // ## Player Sprite
@@ -352,7 +352,7 @@ Q.Sprite.extend("Wolf",{
     this._super(p, { asset: 'titlelogo.png' });
   },
   step: function(dt){
-  	if(Q.inputs['fire']) {
+  	if(Q.inputs['up']) {
   		Q.clearStages();
     	Q.stageScene('level1');
     	Q.stageScene('hud', 3, Q('Player').first().p);
